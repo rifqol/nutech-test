@@ -3,7 +3,7 @@
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const User = require('../models/User');
 
 // Fungsi: Registrasi
 exports.registerUser = async (req, res) => {

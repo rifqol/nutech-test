@@ -8,6 +8,8 @@ const sequelize = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const authMiddleware = require('./middleware/authMiddleware');
+const serviceRoutes = require('./routes/serviceRoutes');
+const bannerRoutes = require('./routes/bannerRoutes');
 const globalErrorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -24,7 +26,8 @@ sequelize.sync({ alter: true })
 
 
 app.use('/', authRoutes);
-app.use('/', authMiddleware, profileRoutes);
+app.use('/', bannerRoutes);
+app.use('/', authMiddleware, profileRoutes, serviceRoutes);
 
 app.use(globalErrorHandler);
 
