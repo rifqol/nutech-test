@@ -1,19 +1,22 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-
-// Impor koneksi sequelize dari db.js
+const path = require('path'); 
+const { MulterError } = require('multer');
 const sequelize = require('./config/db');
 
-// Impor rute
 const authRoutes = require('./routes/authRoutes');
+const profileRoutes = require('./routes/profileRoutes');
+const authMiddleware = require('./middleware/authMiddleware');
+const globalErrorHandler = require('./middleware/errorHandler');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json()); 
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 sequelize.sync({ alter: true })
     .then(() => console.log('Database berhasil disinkronkan.'))
@@ -21,5 +24,8 @@ sequelize.sync({ alter: true })
 
 
 app.use('/', authRoutes);
+app.use('/', authMiddleware, profileRoutes);
+
+app.use(globalErrorHandler);
 
 app.listen(PORT, () => console.log(`Server berjalan di http://localhost:${PORT}`));

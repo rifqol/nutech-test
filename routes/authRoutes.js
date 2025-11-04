@@ -31,16 +31,15 @@ router.post(
 router.post(
   '/login',
   [
-    // Validasi sesuai permintaan
     body('email')
       .isEmail()
       .withMessage('Paramter email tidak sesuai format'),
       
     body('password')
       .isLength({ min: 8 })
-      .withMessage('Parameter password minimal 8 karakter'), // Sesuai permintaan
+      .withMessage('Parameter password minimal 8 karakter'), 
   ],
-  loginUser // Jalankan controller jika validasi lolos
+  loginUser 
 );
 
 module.exports = router;

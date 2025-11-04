@@ -1,15 +1,15 @@
-// File: middleware/authMiddleware.js
-
 const jwt = require('jsonwebtoken');
-const User = require('../models/user'); // Kita gunakan model User
+const User = require('../models/user');
 
 module.exports = async (req, res, next) => {
   const authHeader = req.header('Authorization');
 
+  // --- UBAH DISINI (Token tidak ada) ---
   if (!authHeader) {
     return res.status(401).json({ 
-      status: 'error',
-      message: 'Akses ditolak. Token tidak disediakan.' 
+      status: 108,
+      message: 'Token tidak tidak valid atau kadaluwarsa' ,
+      data: null
     });
   }
 
@@ -17,26 +17,25 @@ module.exports = async (req, res, next) => {
     const token = authHeader.replace('Bearer ', '');
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // Cari User berdasarkan ID dari token
     const user = await User.findByPk(decoded.id, {
-      attributes: { exclude: ['password'] } // Jangan ikutkan password
+      attributes: { exclude: ['password'] } 
     });
-
     if (!user) {
       return res.status(401).json({ 
-        status: 'error',
-        message: 'Token tidak valid. User tidak ditemukan.' 
+        status: 108,
+        message: 'Token tidak tidak valid atau kadaluwarsa',
+        data: null
       });
     }
 
-    // Lampirkan data user ke object request
     req.user = user; 
-    next(); // Lanjutkan ke controller/route berikutnya
+    next(); 
 
   } catch (ex) {
-    res.status(400).json({ 
-      status: 'error',
-      message: 'Token tidak valid.' 
+    return res.status(401).json({ 
+      status: 108,
+      message: 'Token tidak tidak valid atau kadaluwarsa',
+      data: null
     });
   }
 };
