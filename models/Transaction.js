@@ -1,43 +1,41 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const pool = require('../config/db');
 
-const Transaction = sequelize.define('Transaction', {
+exports.create = async (client, userId, invoice, type, description, amount) => {
+  const query = `
+    INSERT INTO transactions (user_id, invoice_number, transaction_type, description, total_amount, created_at, updated_at)
+    VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+    RETURNING *;
+  `;
+  const values = [userId, invoice, type, description, amount];
   
-  user_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'users',
-      key: 'id',
-    }
-  },
+  const { rows } = await client.query(query, values);
+  return rows[0];
+};
 
-  invoice_number: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-  },
+exports.getHistory = async (userId, limit, offset) => {
+  let query = `
+    SELECT
+      invoice_number,
+      transaction_type,
+      description,
+      total_amount,
+      created_at AS created_on
+    FROM transactions
+    WHERE user_id = $1
+    ORDER BY created_at DESC
+  `;
   
-  transaction_type: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-
-  description: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-
-  total_amount: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-
-}, {
-  tableName: 'transactions',
-  timestamps: true,
-  createdAt: 'created_at',
-  updatedAt: 'updated_at',
-});
-
-module.exports = Transaction;
+  const values = [userId];
+  
+  if (limit) {
+    query += ` LIMIT $2`;
+    values.push(limit);
+  }
+  if (offset) {
+    query += ` OFFSET $3`;
+    values.push(offset);
+  }
+  
+  const { rows } = await pool.query(query, values);
+  return rows;
+};

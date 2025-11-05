@@ -1,27 +1,21 @@
-// File: config/db.js
-
-const { Sequelize } = require('sequelize');
+const { Pool } = require('pg');
 require('dotenv').config();
 
-const sequelize = new Sequelize(
-  process.env.DB_DATABASE, 
-  process.env.DB_USER,     
-  process.env.DB_PASSWORD, 
-  {
-    host: process.env.DB_HOST,   
-    port: process.env.DB_PORT,  
-    dialect: 'postgres',   
-    logging: false,
-    
-    dialectOptions: {
-      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
-    }
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
+});
+
+pool.connect((err, client, release) => {
+  if (err) {
+    return console.error('Koneksi database (Raw) gagal:', err.stack);
   }
-);
+  console.log('Koneksi database (PostgreSQL Raw) berhasil.');
+  release();
+});
 
-// Tes koneksi
-sequelize.authenticate()
-  .then(() => console.log('Koneksi database (PostgreSQL) berhasil.'))
-  .catch(err => console.error('Koneksi database gagal:', err));
-
-module.exports = sequelize;
+module.exports = pool;

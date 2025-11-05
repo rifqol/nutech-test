@@ -1,3 +1,4 @@
+
 exports.getBalance = async (req, res) => {
   try {
     const balance = req.user.balance;
@@ -10,7 +11,7 @@ exports.getBalance = async (req, res) => {
       }
     });
 
-  } catch (error){
+  } catch (error) {
     console.error('Error di getBalance:', error);
     return res.status(500).json({
       status: 500,

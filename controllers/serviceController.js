@@ -2,9 +2,8 @@ const Service = require('../models/Service');
 
 exports.getServices = async (req, res) => {
   try {
-    const services = await Service.findAll({
-      attributes: ['service_code', 'service_name', 'service_icon', 'service_tariff']
-    });
+    const services = await Service.getAllServices();
+
     return res.status(200).json({
       status: 0,
       message: 'Sukses',

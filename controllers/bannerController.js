@@ -2,9 +2,7 @@ const Banner = require('../models/Banner');
 
 exports.getBanners = async (req, res) => {
   try {
-    const banners = await Banner.findAll({
-      attributes: ['banner_name', 'banner_image', 'description']
-    });
+    const banners = await Banner.getAllBanners();
 
     return res.status(200).json({
       status: 0,

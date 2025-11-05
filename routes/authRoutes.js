@@ -1,21 +1,15 @@
-// File: routes/authRoutes.js
-
 const express = require('express');
 const { body } = require('express-validator');
 const { registerUser, loginUser } = require('../controllers/authController');
 
 const router = express.Router();
 
-// API Registrasi
 router.post(
   '/registration',
   [
-    // --- UBAH DISINI ---
     body('email')
       .isEmail()
-      .withMessage('Paramter email tidak sesuai format'), // Pesan diubah
-    
-    // Kita juga bisa seragamkan pesan error lainnya
+      .withMessage('Paramter email tidak sesuai format'),
     body('first_name')
       .notEmpty()
       .withMessage('Parameter first_name tidak boleh kosong'),
@@ -27,7 +21,6 @@ router.post(
   registerUser
 );
 
-// API Login
 router.post(
   '/login',
   [
