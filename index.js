@@ -5,11 +5,13 @@ const path = require('path');
 const { MulterError } = require('multer');
 const sequelize = require('./config/db');
 
+const authMiddleware = require('./middleware/authMiddleware');
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
-const authMiddleware = require('./middleware/authMiddleware');
 const serviceRoutes = require('./routes/serviceRoutes');
+const balanceRoutes = require('./routes/balanceRoutes');
 const bannerRoutes = require('./routes/bannerRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
 const globalErrorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -28,6 +30,8 @@ sequelize.sync({ alter: true })
 app.use('/', authRoutes);
 app.use('/', bannerRoutes);
 app.use('/', authMiddleware, profileRoutes, serviceRoutes);
+app.use('/', authMiddleware, balanceRoutes);
+app.use('/', authMiddleware, transactionRoutes);
 
 app.use(globalErrorHandler);
 

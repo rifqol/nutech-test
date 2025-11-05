@@ -1,11 +1,7 @@
-// File: models/User.js
-
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Meng-impor koneksi dari db.js
+const sequelize = require('../config/db'); 
 
-const User = sequelize.define('User', {
-  // id akan dibuat otomatis
-  
+const User = sequelize.define('User', { 
   email: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -33,10 +29,14 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: true, 
   },
+  balance: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
 
 }, {
   tableName: 'users',
-  // Kita definisikan timestamps di sini, persis seperti file Admin.js Anda
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: 'updated_at',
